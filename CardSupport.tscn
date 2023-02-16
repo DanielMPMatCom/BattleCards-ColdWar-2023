@@ -84,5 +84,6 @@ margin_left = -85.0
 margin_top = -120.0
 margin_right = 85.0
 margin_bottom = 120.0
+button_mask = 3
 
 [connection signal="pressed" from="CardMargin/BackgroundCard/SelectCard" to="." method="_on_SelectCard_pressed"]

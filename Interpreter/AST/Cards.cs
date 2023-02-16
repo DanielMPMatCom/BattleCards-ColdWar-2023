@@ -50,7 +50,7 @@ public class Card : ASTNode
         }
 
         bool checkpolitical_currents = political_current.CheckSemantic(context, scope, errors);
-        if(!context.political_currents.Contains(political_current.ToString())) {
+        if(!context.political_currents.Contains(political_current.GetValue().ToString())) {
             errors.Add(new CompilingError(Location, ErrorCode.Invalid, String.Format("{0} politcal_current does not exists", political_current)));
             checkpolitical_currents = false;
         }
@@ -123,10 +123,9 @@ public class Card : ASTNode
         int nAttack = int.Parse(string.Format("{0}", this.Attack.GetValue()));
         string npolitcal_current = this.political_current.ToString();
 
-        // Busquemos si existe una foto para la carta con el nombre dado
         string nPathToPhoto = null;
 
-        if(PathToPhoto.GetValue() != null)
+        if(PathToPhoto.GetValue() != null && PathToPhoto.GetValue().ToString() != "")
         {
             List<string> results = new List<string>();
             System.IO.DirectoryInfo rootDir = new DirectoryInfo("Images");
@@ -139,8 +138,15 @@ public class Card : ASTNode
         }
 
         string nEffectText = this.EffectText.GetValue().ToString();
-        
-        return new CardTemplate(nName, ncardtype, nRareness, nLore, nHealth, nAttack, npolitcal_current, nPathToPhoto, nEffectText, this.Effect);
+
+        if(ncardtype == TokenValues.Unit)
+        {
+            return new Unit(nName, ncardtype, nRareness, nLore, nHealth, nAttack, npolitcal_current, nPathToPhoto, nEffectText, this.Effect);
+        }
+        else
+        {
+            return new Politic(nName, ncardtype, nRareness, nLore, 0, 0, npolitcal_current, nPathToPhoto, nEffectText, this.Effect);
+        }
     }
 
     string CreateJsonDirection(string path, string name) {

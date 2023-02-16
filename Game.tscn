@@ -166,55 +166,37 @@ margin_top = 106.0
 margin_right = 84.0
 margin_bottom = 121.0
 
-[node name="Summon" type="Button" parent="Board"]
-margin_left = -736.0
-margin_top = 173.0
-margin_right = -475.0
-margin_bottom = 225.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 2 )
-text = "Summon Card"
-
-[node name="AttackButton" type="Button" parent="Board"]
-margin_left = -469.467
-margin_top = 172.833
-margin_right = -346.467
-margin_bottom = 224.833
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 2 )
-text = "Attack"
-
 [node name="EffectButton" type="Button" parent="Board"]
-margin_left = -338.368
+margin_left = -685.235
 margin_top = 173.0
-margin_right = -218.368
+margin_right = -565.235
 margin_bottom = 225.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "Effect"
 
 [node name="EndPhase" type="Button" parent="Board"]
-margin_left = -211.824
+margin_left = -510.847
 margin_top = 171.0
-margin_right = -17.8243
+margin_right = -316.848
 margin_bottom = 226.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = SubResource( 6 )
 text = "End Phase"
 
 [node name="PassTurn" type="Button" parent="Board"]
-margin_left = -11.9609
+margin_left = -263.141
 margin_top = 171.417
-margin_right = 182.039
+margin_right = -69.1407
 margin_bottom = 226.417
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = SubResource( 6 )
 text = "Pass Turn"
 
 [node name="NextRound" type="Button" parent="Board"]
-margin_left = 188.385
+margin_left = -14.9509
 margin_top = 171.417
-margin_right = 382.385
+margin_right = 204.049
 margin_bottom = 226.417
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = SubResource( 6 )
@@ -398,15 +380,13 @@ margin_top = -228.0
 margin_right = 397.0
 margin_bottom = -28.0
 
-[node name="HumanPlayerField" type="TextureButton" parent="Board"]
+[node name="UserField" type="TextureButton" parent="Board"]
 margin_left = -739.0
 margin_top = -28.0
 margin_right = 397.0
 margin_bottom = 172.0
 
 [connection signal="pressed" from="Board/DeckMargin/Deck" to="." method="_on_Deck_pressed"]
-[connection signal="pressed" from="Board/Summon" to="." method="_on_Summon_pressed"]
-[connection signal="pressed" from="Board/AttackButton" to="." method="_on_AttackButton_pressed"]
 [connection signal="pressed" from="Board/EffectButton" to="." method="_on_EffectButton_pressed"]
 [connection signal="pressed" from="Board/EndPhase" to="." method="_on_EndPhase_pressed"]
 [connection signal="pressed" from="Board/PassTurn" to="." method="_on_PassTurn_pressed"]

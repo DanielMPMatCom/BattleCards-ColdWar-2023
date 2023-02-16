@@ -37,7 +37,7 @@ public class EffectParser : Parser
                     program.political_currents[political_current.Id] = political_current;
                     break;
                 case TokenValues.Card:
-                    Card card = ParseCard(errors);
+                    Card card = ParseCard(program, errors);
                     program.Cards[card.Id] = card;
                     break;
                 case TokenValues.If:
@@ -149,7 +149,6 @@ public class EffectParser : Parser
         }
 
         effexp.CardToHandle = program.Cards[Stream.LookAhead().Value];
-        // GD.Print(effexp.CardToHandle.Id);
 
         if (!Stream.Next(TokenValues.ClosedBracket))
         {
@@ -205,7 +204,17 @@ public class EffectParser : Parser
         }
         else
         {
-            effexp.EffectConditional = null;
+            switch(effexp.GetValue().ToString())
+            {
+                case TokenValues.AddCardToBoard:
+                case TokenValues.AddCardToDeck:
+                case TokenValues.DrawCards:
+                    effexp.EffectConditional = TokenValues.automatic;
+                    break;
+                default:
+                    effexp.EffectConditional = null;
+                    break;
+            }
         }
 
         if (!Stream.Next(TokenValues.ClosedBracket))

@@ -49,9 +49,17 @@ public class POObject : BinaryExpression
     {
         if(OnGame)
         {
-            foreach(CardSupport cardSupport in Game.HumanPlayer.PlayerBoard.CardsOnBoard.Keys)
+            foreach(CardSupport cardSupport in Game.EnemyPlayer.PlayerBoard.CardsOnBoard.Keys)
             {
-                if(SeparatedName(Left.GetValue().ToString()) == cardSupport.CardName)
+                if(SeparatedName(Left.GetValue().ToString()) == cardSupport.LogicCard.CardName)
+                {
+                    switchRight(cardSupport);
+                }
+            }
+
+            foreach(CardSupport cardSupport in Game.UserPlayer.PlayerBoard.CardsOnBoard.Keys)
+            {
+                if(SeparatedName(Left.GetValue().ToString()) == cardSupport.LogicCard.CardName)
                 {
                     switchRight(cardSupport);
                 }
@@ -75,26 +83,26 @@ public class POObject : BinaryExpression
                             this.Type = ExpressionType.Number;
                             break;
                         case TokenValues.Rareness:
-                            this.SetValue(cardSupport.Rareness);
+                            this.SetValue(cardSupport.Rareness.ToString());
                             this.Type = ExpressionType.Text;
                             break;
                         case TokenValues.political_current:
-                            this.SetValue(cardSupport.political_current);
+                            this.SetValue(cardSupport.political_current.ToString());
                             this.Type = ExpressionType.Text;
                             break;
                         case TokenValues.CardType:
-                            this.SetValue(ExpressionType.Text);
+                            this.SetValue(cardSupport.cardtype.ToString());
                             this.Type = ExpressionType.Text;
                             break;
                         default:
-                            this.SetValue(-1);
+                            this.SetValue(null);
                             this.Type = ExpressionType.Number;
                             break;
                     }
                 }
                 else
                 {
-                    this.SetValue(-1);
+                    this.SetValue(null);
                 }
             }
         }
@@ -105,27 +113,27 @@ public class POObject : BinaryExpression
         switch(Right.GetValue().ToString())
         {
             case TokenValues.Health:
-                this.SetValue(cardSupport.Health);
+                this.SetValue(cardSupport.LogicCard.Health);
                 this.Type = ExpressionType.Number;
                 break;
             case TokenValues.Attack:
-                this.SetValue(cardSupport.Attack);
+                this.SetValue(cardSupport.LogicCard.Attack);
                 this.Type = ExpressionType.Number;
                 break;
             case TokenValues.Rareness:
-                this.SetValue(cardSupport.Rareness);
+                this.SetValue(cardSupport.LogicCard.Rareness.ToString());
                 this.Type = ExpressionType.Text;
                 break;
             case TokenValues.political_current:
-                this.SetValue(cardSupport.political_current);
+                this.SetValue(cardSupport.LogicCard.political_current.ToString());
                 this.Type = ExpressionType.Text;
                 break;
             case TokenValues.CardType:
-                this.SetValue(ExpressionType.Text);
+                this.SetValue(cardSupport.LogicCard.cardtype.ToString());
                 this.Type = ExpressionType.Text;
                 break;
             default:
-                this.SetValue(-1);
+                this.SetValue(null);
                 this.Type = ExpressionType.Number;
                 break;
         }

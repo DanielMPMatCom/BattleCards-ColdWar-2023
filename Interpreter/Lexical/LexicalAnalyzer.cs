@@ -61,6 +61,7 @@ public class Compiling
                 __LexicalProcess.RegisterKeyword("Health", TokenValues.Health);
 
                 __LexicalProcess.RegisterKeyword("PoliticalCurrent", TokenValues.PoliticalCurrent);
+                __LexicalProcess.RegisterKeyword("political_current", TokenValues.political_current);
                 __LexicalProcess.RegisterKeyword("PathToPhoto", TokenValues.PathToPhoto);
                 __LexicalProcess.RegisterKeyword("EffectText", TokenValues.EffectText);
                 __LexicalProcess.RegisterKeyword("Effect", TokenValues.Effect);

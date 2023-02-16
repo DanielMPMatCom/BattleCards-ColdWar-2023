@@ -121,4 +121,5 @@ public class  TokenValues
     public const string minAttack = "minAttack";
     public const string maxHealth = "maxHealth";
     public const string maxAttack = "maxAttack";
+    public const string automatic = "automatic";
 }

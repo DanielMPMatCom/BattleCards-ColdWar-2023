@@ -41,7 +41,7 @@ public class Parser
                     program.political_currents[political_current.Id] = political_current;
                     break;
                 case TokenValues.Card:
-                    Card card = ParseCard(errors);
+                    Card card = ParseCard(program, errors);
                     program.Cards[card.Id] = card;
                     break;
                 case TokenValues.If:
@@ -104,13 +104,10 @@ public class Parser
                     if (to_print != null)
                         program.PrintingList.Add(to_print);
                     break;
-                // case TokenValues.id:
-                //     ParseTheIdentifier();
-                //     break;
                 case TokenValues.StatementSeparator:
                     break;
                 default:
-                    errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression"));
+                    errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. Don't recognize what is " + Stream.LookAhead().Value));
                     return program;
             }
 
@@ -258,7 +255,6 @@ public class Parser
         return new BoolExpr(BOP.OR, left, right, Stream.LookAhead().Location);
     }
 
-
     public PoliticalCurrent ParsePoliticalCurrent(List<CompilingError> errors)
     {
 
@@ -285,7 +281,7 @@ public class Parser
         return political_current;
     }
 
-    public Card ParseCard(List<CompilingError> errors)
+    public Card ParseCard(ColdWarProgram program, List<CompilingError> errors)
     {
         Card card = new Card("null", Stream.LookAhead().Location);
 
@@ -299,6 +295,7 @@ public class Parser
             card.Id = Stream.LookAhead().Value;
         }
 
+        program.AuxiliarCardParser.Add(card.Id, new List<(Token, Expression)>());
 
         if (!Stream.Next(TokenValues.OpenCurlyBraces))
         {
@@ -306,179 +303,205 @@ public class Parser
             return card;
         }
 
-        // CARD TYPE--------------------------------
-
-        if (!SimpleParse(TokenValues.CardType, errors)) return card;
-
-        /* Here we parse the expression. If null is returned, we send an error */
-        if (!(Stream.Next(TokenValues.Unit)) && !(Stream.Next(TokenValues.Politic)))
+        for(int i=0; i<8; i++)
         {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. Expected Unit or Politic"));
-            return card;
-        }
-        card.cardtype = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
-
-        if (!Stream.Next(TokenValues.StatementSeparator))
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-            return card;
-        }
-
-        // RARENESS---------------------------------------
-
-        if (!SimpleParse(TokenValues.Rareness, errors)) return card;
-
-        /* Here we parse the expression. If null is returned, we send an error */
-        if (!(Stream.Next(TokenValues.Legendary) || Stream.LookAhead().Value == TokenValues.Rare || Stream.LookAhead().Value == TokenValues.Common))
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. Expected Legendary, Rare or Common"));
-            return card;
-        }
-        card.Rareness = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
-
-
-        if (!Stream.Next(TokenValues.StatementSeparator))
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-            return card;
-        }
-
-        // Lore---------------------------------------
-
-        if (!SimpleParse(TokenValues.Lore, errors)) return card;
-
-        Expression exp = ParseExpression();
-        if (exp == null) card.Lore = new Text("Insert epic lore", Stream.LookAhead().Location);
-        else card.Lore = exp;
-
-        if (!Stream.Next(TokenValues.StatementSeparator))
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-            return card;
-        }
-
-        if(card.cardtype.GetValue().ToString() == TokenValues.Unit)
-        {
-            // Health---------------------------------------
-
-            if (!SimpleParse(TokenValues.Health, errors)) return card;
-
-            exp = ParseExpression();
-            if (exp == null)
+            if (!Stream.Next(TokenType.Keyword))
             {
-                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression"));
+                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, Stream.LookAhead().Value.ToString() + " is not a keyword"));
                 return card;
             }
-            card.Health = exp;
 
-            if (!Stream.Next(TokenValues.StatementSeparator))
+            Token iden = Stream.LookAhead();
+            
+            if (!Stream.Next(TokenValues.Assign))
+            {
+                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "= expected"));
+                return card;
+            }
+
+            Expression exp = ParseExpression();
+
+            if(!Stream.Next(TokenValues.StatementSeparator))
             {
                 errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
                 return card;
-            }
+            }   
 
-            // ATTACK-------------------------------------
-
-            if (!SimpleParse(TokenValues.Attack, errors)) return card;
-
-            exp = ParseExpression();
-            if (exp == null)
-            {
-                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression"));
-                return card;
-            }
-            card.Attack = exp;
-
-            if (!Stream.Next(TokenValues.StatementSeparator))
-            {
-                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-                return card;
-            }
-        }
-        else
-        {
-            card.Health = new Number(0, Stream.LookAhead().Location);
-            card.Attack = new Number(0, Stream.LookAhead().Location);
+            program.AuxiliarCardParser[card.Id].Add((iden, exp)) ;
         }
 
+        // // CARD TYPE--------------------------------
 
-        // POLITICAL_CURRENT
+        // if (!SimpleParse(TokenValues.CardType, errors)) return card;
 
-        if (!SimpleParse(TokenValues.political_current, errors)) return card;
+        // /* Here we parse the expression. If null is returned, we send an error */
+        // if (!(Stream.Next(TokenValues.Unit)) && !(Stream.Next(TokenValues.Politic)))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. Expected Unit or Politic"));
+        //     return card;
+        // }
+        // card.cardtype = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
 
-        if (Stream.Next(TokenType.Identifier))
-        {
-            card.political_current = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
-        }
-        else
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Doesn't exist in this context"));
-            return card;
-        }
+        // if (!Stream.Next(TokenValues.StatementSeparator))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //     return card;
+        // }
 
-        if (!Stream.Next(TokenValues.StatementSeparator))
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-            return card;
-        }
+        // // RARENESS---------------------------------------
 
-        // PathToPhoto-----------------------------------------s
+        // if (!SimpleParse(TokenValues.Rareness, errors)) return card;
 
-        if(!SimpleParse(TokenValues.PathToPhoto, errors)) return card;
-
-        if(Stream.Next(TokenType.Text))
-        {
-            card.PathToPhoto = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
-        }
-        else
-        {
-            if(Stream.Next(TokenValues.StatementSeparator))
-            {
-                card.PathToPhoto = new Text(null, Stream.LookAhead().Location);
-                Stream.MoveBack(1);
-            }
-            else
-            {
-                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. If there is a photo, the argument must be a string"));
-                return card;
-            }
-        }
+        // /* Here we parse the expression. If null is returned, we send an error */
+        // if (!(Stream.Next(TokenValues.Legendary) || Stream.LookAhead().Value == TokenValues.Rare || Stream.LookAhead().Value == TokenValues.Common))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. Expected Legendary, Rare or Common"));
+        //     return card;
+        // }
+        // card.Rareness = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
 
 
-        if (!Stream.Next(TokenValues.StatementSeparator))
-        {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-            return card;
-        }
+        // if (!Stream.Next(TokenValues.StatementSeparator))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //     return card;
+        // }
 
-        // Effect Text ----------------------------------------------------
+        // // Lore---------------------------------------
 
-        if(Stream.Next(TokenValues.EffectText))
-        {
-            Stream.MoveBack(1);
-            if(!SimpleParse(TokenValues.EffectText, errors)) return card;
-            exp = ParseExpression();
-            if (exp != null)
-            {
-                card.EffectText = exp;  
-            }
-            else
-            {
-                card.EffectText = new Text("", Stream.LookAhead().Location);
-            }
+        // if (!SimpleParse(TokenValues.Lore, errors)) return card;
 
-            if (!Stream.Next(TokenValues.StatementSeparator))
-            {
-                errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
-                return card;
-            }  
-        }
-        else
-        {
-            card.EffectText = new Text("", Stream.LookAhead().Location);
-        }
+        // Expression exp = ParseExpression();
+        // card.Lore = exp ?? new Text("Insert epic lore", Stream.LookAhead().Location);
+       
+        // if (!Stream.Next(TokenValues.StatementSeparator))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //     return card;
+        // }
 
-        // Effect ------------------------------------------------
+        // if(card.cardtype.GetValue().ToString() == TokenValues.Unit)
+        // {
+        //     // Health---------------------------------------
+
+        //     if (!SimpleParse(TokenValues.Health, errors)) return card;
+
+        //     exp = ParseExpression();
+        //     if (exp == null)
+        //     {
+        //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression"));
+        //         return card;
+        //     }
+        //     card.Health = exp;
+
+        //     if (!Stream.Next(TokenValues.StatementSeparator))
+        //     {
+        //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //         return card;
+        //     }
+
+        //     // ATTACK-------------------------------------
+
+        //     if (!SimpleParse(TokenValues.Attack, errors)) return card;
+
+        //     exp = ParseExpression();
+        //     if (exp == null)
+        //     {
+        //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression"));
+        //         return card;
+        //     }
+        //     card.Attack = exp;
+
+        //     if (!Stream.Next(TokenValues.StatementSeparator))
+        //     {
+        //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //         return card;
+        //     }
+        // }
+        // else
+        // {
+        //     card.Health = new Number(0, Stream.LookAhead().Location);
+        //     card.Attack = new Number(0, Stream.LookAhead().Location);
+        // }
+
+
+        // // POLITICAL_CURRENT
+
+        // if (!SimpleParse(TokenValues.political_current, errors)) return card;
+
+        // if (Stream.Next(TokenType.Identifier))
+        // {
+        //     card.political_current = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
+        // }
+        // else
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Doesn't exist in this context"));
+        //     return card;
+        // }
+
+        // if (!Stream.Next(TokenValues.StatementSeparator))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //     return card;
+        // }
+
+        // // PathToPhoto-----------------------------------------s
+
+        // if(!SimpleParse(TokenValues.PathToPhoto, errors)) return card;
+
+        // if(Stream.Next(TokenType.Text))
+        // {
+        //     card.PathToPhoto = new Text(Stream.LookAhead().Value, Stream.LookAhead().Location);
+        // }
+        // else
+        // {
+        //     if(Stream.Next(TokenValues.StatementSeparator))
+        //     {
+        //         card.PathToPhoto = new Text(null, Stream.LookAhead().Location);
+        //         Stream.MoveBack(1);
+        //     }
+        //     else
+        //     {
+        //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Invalid, "Bad expression. If there is a photo, the argument must be a string"));
+        //         return card;
+        //     }
+        // }
+
+
+        // if (!Stream.Next(TokenValues.StatementSeparator))
+        // {
+        //     errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //     return card;
+        // }
+
+        // // Effect Text ----------------------------------------------------
+
+        // if(Stream.Next(TokenValues.EffectText))
+        // {
+        //     Stream.MoveBack(1);
+        //     if(!SimpleParse(TokenValues.EffectText, errors)) return card;
+        //     exp = ParseExpression();
+        //     if (exp != null)
+        //     {
+        //         card.EffectText = exp;  
+        //     }
+        //     else
+        //     {
+        //         card.EffectText = new Text("", Stream.LookAhead().Location);
+        //     }
+
+        //     if (!Stream.Next(TokenValues.StatementSeparator))
+        //     {
+        //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "; expected"));
+        //         return card;
+        //     }  
+        // }
+        // else
+        // {
+        //     card.EffectText = new Text("", Stream.LookAhead().Location);
+        // }
+
+        // // Effect ------------------------------------------------
 
         if(Stream.Next(TokenValues.Effect))
         {
@@ -540,18 +563,37 @@ public class Parser
         return exp;
     }
 
-    protected bool SimpleParse(string token_type, List<CompilingError> errors)
+    // protected bool SimpleParse(string token_type, List<CompilingError> errors)
+    // {
+    //     if (!Stream.Next(token_type))
+    //     {
+    //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, token_type + " expected"));
+    //         return false;
+    //     }
+    //     if (!Stream.Next(TokenValues.Assign))
+    //     {
+    //         errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "= expected"));
+    //         return false;
+    //     }
+
+    //     return true;
+    // }
+
+        protected bool SimpleParse(List<CompilingError> errors)
     {
-        if (!Stream.Next(token_type))
+        if (!Stream.Next(TokenType.Keyword))
         {
-            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, token_type + " expected"));
+            errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, Stream.LookAhead().Value.ToString() + " is not a keyword"));
             return false;
         }
+
         if (!Stream.Next(TokenValues.Assign))
         {
             errors.Add(new CompilingError(Stream.LookAhead().Location, ErrorCode.Expected, "= expected"));
             return false;
         }
+
+
 
         return true;
     }
