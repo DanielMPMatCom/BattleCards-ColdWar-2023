@@ -1,0 +1,333 @@
+\documentclass[letter,12pt]{article}
+
+%-----------------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{revista_ocm}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{babel}
+\usepackage{pdflscape}
+
+\renewcommand{\figurename}{Figura}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{miverde}{rgb}{0,0.6,0}
+\definecolor{migris}{rgb}{0.5,0.5,0.5}
+\definecolor{mimalva}{rgb}{0.58,0,0.82}
+
+\lstset{
+  backgroundcolor=\color{white},   % Indica el color de fondo; necesita que se añada \usepackage{color} o \usepackage{xcolor}
+  basicstyle=\footnotesize,        % Fija el tamaño del tipo de letra utilizado para el código
+  breakatwhitespace=false,         % Activarlo para que los saltos automáticos solo se apliquen en los espacios en blanco
+  breaklines=true,                 % Activa el salto de línea automático
+  captionpos=b,                    % Establece la posición de la leyenda del cuadro de código
+  commentstyle=\color{miverde},    % Estilo de los comentarios
+  deletekeywords={...},            % Si se quiere eliminar palabras clave del lenguaje
+  escapeinside={\%*}{*)},          % Si quieres incorporar LaTeX dentro del propio código
+  extendedchars=true,              % Permite utilizar caracteres extendidos no-ASCII; solo funciona para codificaciones de 8-bits; para UTF-8 no funciona. En xelatex necesita estar a true para que funcione.
+  frame=single,	                   % Añade un marco al código
+  keepspaces=true,                 % Mantiene los espacios en el texto. Es útil para mantener la indentación del código(puede necesitar columns=flexible).
+  keywordstyle=\color{mimalva},       % estilo de las palabras clave
+  language=Python,                 % El lenguaje del código
+  otherkeywords={*,...},           % Si se quieren añadir otras palabras clave al lenguaje
+  numbers=left,                    % Posición de los números de línea (none, left, right).
+  numbersep=5pt,                   % Distancia de los números de línea al código
+  numberstyle=\small\color{migris}, % Estilo para los números de línea
+  rulecolor=\color{black},         % Si no se activa, el color del marco puede cambiar en los saltos de línea entre textos que sea de otro color, por ejemplo, los comentarios, que están en verde en este ejemplo
+  showspaces=false,                % Si se activa, muestra los espacios con guiones bajos; sustituye a 'showstringspaces'
+  showstringspaces=false,          % subraya solamente los espacios que estén en una cadena de esto
+  showtabs=false,                  % muestra las tabulaciones que existan en cadenas de texto con guión bajo
+  stepnumber=2,                    % Muestra solamente los números de línea que corresponden a cada salto. En este caso: 1,3,5,...
+  stringstyle=\color{miverde},     % Estilo de las cadenas de texto
+  tabsize=3,	                   % Establece el salto de las tabulaciones a 2 espacios
+  title=\lstname }
+
+%Formato propio
+\parindent=0pt
+
+%Paquetes propios
+\usepackage{amsthm}
+
+%Teoremas:
+\theoremstyle{definition}
+\newtheorem{prob}{Problema}
+
+\newtheoremstyle{lemma}{}{}{}{}{\em}{.}{ }{}
+\theoremstyle{lemma}
+\newtheorem{lema}{Lema}[prob]
+\newtheorem{caso}{Caso}[prob]
+
+\newtheoremstyle{comment}{}{}{}{}{\bf}{.}{ }{}
+\theoremstyle{comment}
+\newtheorem{comentario}{Comentario}[prob]
+
+
+
+%------------------------------------------------------------------------------
+\ShortHeadings{Battle Cards: Cold War}{Rodrigo Mederos González - Daniel Machado Pérez}
+%===================================================================================
+\begin{document}
+%---------------------------------------------------------------
+
+\begingroup
+
+\title{Informe y Manual de Usuario del proyecto de Programación Battle Cards, 2022}
+\begin{center}
+	\includegraphics[scale=0.5]{logoMATCOM.png}
+    \includegraphics[scale=0.25]{logoUH.png}
+	\includegraphics[scale=0.40]{ColdWarLogo.jpeg}
+\end{center}
+
+\author{\name Rodrigo Mederos González - Daniel Machado Pérez
+	\\ \addr Estudiantes de Ciencia de la Computación, Facultad de Matemática y Computación, Universidad de La Habana
+	\\ \email rodrigo.mederos@estudiantes.matcom.uh.cu
+	\\ \email daniel.machado@estudiantes.matcom.uh.cu }
+\endgroup
+	
+%-----------------------------------------------------------------------------------
+\maketitle
+
+\pagebreak
+\begin{abstract}
+En el año 2022, como parte de la asignatura de Programación de Primer Año de la carrera Ciencia de la Computación de la Universidad de la Habana, fue orientado un proyecto a realizar por los estudiantes como parte de su evaluación del Segundo Semestre. La tarea consistía en diseñar un juego de tipo \textbf{Trading Card Game} llamado \textbf{Battle Cards}, con la particularidad de permitir la extensibilidad de crear nuevas cartas mediante un mini lenguaje de programación elaborado por nosotros. Para este caso en particular la aplicación visual fue desarrollada en \textbf{Godot}, utilizando \textbf{C\#}.
+\end{abstract}
+
+
+\begin{keywords}
+	Lenguaje, AST, Parser, Lexer, ChackSemantic, Evaluate, Expression, Card, Effect,Jugador Virtual, Board, Game, Godot.
+\end{keywords}
+
+
+%-----------------------------------------------------------------------------------
+\vspace{0.8cm}
+\section{Sobre el uso de Godot}\label{sec:Introduccion}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=2.3]{Godot.png}
+\caption{Godot}
+\end{figure}
+
+La interfaz visual del juego se genera a través de un motor llamado \textbf{Godot}, que trabaja con una jerarquía bien definida, a través de árboles de escenas y nodos. Para este proyecto se han creado 4 escenas: \textbf{Main}, \textbf{Menu}, \textbf{Game}, \textbf{CardSupport}. El árbol está estructurado con \textbf{Main} como la raíz, cuyo nodo principal es de tipo \textbf{Node}, y \textbf{Menu} y \textbf{Game} como subnodos de \textbf{Main}, ambos con un nodo principal de tipo \textbf{Node2D}. La escena \textbf{CardSupport} no pertenece inicialmente al árbol de nodos, y su nodo principal es un \textbf{Node2D}. \textbf{Menu}, \textbf{Game} y \textbf{CardSupport} tienen vinculado un script, cuya clase principal lleva el mismo nombre de la respectiva escena, y es una subclase de la clase del tipo del nodo principal de la escena, en este caso \textbf{Node2D}. A través de estos scripts y otros que fueron añadidos no vinculados a \textbf{Godot}, es que se desarrolla la jugabilidad de \textbf{Cold War}. Las escenas \textbf{Menu}, \textbf{Game} y \textbf{CardSupport} constituyen en sí, cada una, un árbol de nodos, con gran cantidad de subnodos que facilita \textbf{Godot} para manejar las interacciones del juego y cambiar los estados del mismo. El juego comienza por la escena \textbf{Menu}, que se utiliza para configurar toda la partida, mediante un sistema de botones que permiten, entre otras cosas, seleccionar el \textbf{Deck}, las \textbf{Cartas}, el \textbf{Modo de Juego} y acceder al \textbf{Código Fuente} para crear nuevas \textbf{Cartas} y \textbf{Decks}. Luego de configurada la partida, el usuario se traslada a la escena \textbf{Game}, que es donde se desarrolla la dinámica del juego. Allí se manejará la interacción entre las \textbf{Cartas} y entre los jugadores para, mediante un \textbf{Flujo de Estados}, obtener un ganador. 
+
+\section{Sobre las Clases y las Abstracciones}
+
+En la carpeta raíz del juego existen 6 scripts: \textbf{Board}, \textbf{CardSupport}, \textbf{CardTemplate}, \textbf{Game}, \textbf{Menu}, \textbf{PlayerTemplate}. De ellos existen 3 vinculados a nodos de \textbf{Godot}. 
+\subsection{CardTemplate}
+ Esta clase se encarga del trabajo con las \textbf{Cartas} "lógicas", que son guardadas en forma de archivos .json. La función principal de esta clase es deserializar los archivos y guardar la información, para luego ser transmitida a \textbf{CardSupport}. Además es la superclase de \textbf{Unit} y \textbf{Politic}:
+ \subsubsection{Unit}
+ Es la clase que engloba las cartas lógicas de tipo \textbf{Unidad}.
+ \subsubsection{Politic}
+ Es la clase que engloba las cartas de tipo \textbf{Política}. En este tipo de cartas existe una particularidad y es que no poseen \textbf{Health} ni \textbf{Attack}, solamente \textbf{Effect}, y son destruidas automáticamente luego de ejecutar el efecto.
+
+ 
+ \subsection{CardSupport}
+ Esta clase se encarga de manejar la interfaz visual de las cartas, como nodos de \textbf{Godot}, que serán añadidos al árbol de nodos del juego para poder interactuar con ellas. Contiene una propiedad de tipo \textbf{CardTemplate} (que será \textbf{Unit} o \textbf{Politic} según corresponda), para manejar los parámetros lógicos de la cartas. Cada carta posee un subnodo de tipo \textbf{Button} que facilita las interacciones a través de \textbf{Eventos del Mouse}, específicamente con los clicks \textbf{Izquierdo} y \textbf{Derecho}. El click \textbf{Izquierdo} será usado para seleccionar la \textbf{Carta}, y el click \textbf{Derecho} para atacarla, habiendo previamente seleccionado otra. Existen varios métodos en la clase:
+ \begin{itemize}
+ \item\textbf{GenerateCardVisualBase()}:Establece el fondo y el tamaño inicial de la \textbf{Carta}.
+ \item\textbf{MakeCard()}: Establece visualmente las propiedades de la \textbf{Carta}.
+\item\textbf{UpdateCardVisual()}: Actualiza visualmente los parámetros de la \textbf{Carta}, así como su representación en \textbf{Game}.
+\end{itemize}
+\pagebreak
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{CardExample.png}
+\caption{Ejemplo de Carta}
+\end{figure}
+
+\subsection{Board}
+La clase \textbf{Board} se utiliza para englobar en un objeto del tipo de la clase determinadas propiedades que serán utilizadas por un jugador. En nuestro juego cada jugador cuenta con su propio \textbf{Board}, lo que le permite una mejor interacción con sus partes. Muchas acciones del juego provocan cambios en el \textbf{Board} del jugador que las ejecuta, o el del jugador contrario. Estas propiedades son:
+\begin{itemize}
+\item\textbf{Deck}: Lista de cartas en el \textbf{Deck}.
+ \item\textbf{HandCards}: Lista de \textbf{Cartas} en la mano.
+ \item\textbf{CardsOnBoard}: Diccionario que agrupa las \textbf{Cartas} en el campo y su respectiva posición en el mismo.
+\item\textbf{Graveyard}: Lista de \textbf{Cartas} en el cementerio, luego de ser destruidas.
+\end{itemize}
+
+\subsection{Player}
+Esta clase representa un jugador, que puede ser \textbf{Humano} o \textbf{Virtual}, por lo que es la superclase de \textbf{HumanPlayer} y \textbf{VirtualPlayer}. Un \textbf{Player} se caracteriza por tener un nombre, que coincidirá con la \textbf{Corriente Política} de las \textbf{Cartas} de su \textbf{Deck}. Además tiene un \textbf{Board} como se explicó anteriormente. También, en dependencia de si es el jugador del usuario o del enemigo, tendrá una posición en el tablero general, donde desplegará sus \textbf{Cartas} de la mano y podrá invocarlas. Por último, posee una referencia al juego donde está participando, para poder acceder a sus métodos y jugar. La clase posee los métodos:
+\begin{itemize}
+\item\textbf{Summon()}: Dada una \textbf{Carta} y una posición, invoca la carta en dicha posición, removiéndola de la mano, añadiéndola al campo y llamando a la función. \textbf{MakeSummon()} de la clase \textbf{Game} para ejecutar el cambio visual.
+ \item\textbf{Attack()}: Dadas una \textbf{Carta} atacante y una atacada, ejecuta el ataque si no pertenecen al mismo jugador, destruyendo la perdedora del combate a través de un método \textbf{DestroyCard()} de \textbf{Game}, que las mueve al cementerio.
+  \item\textbf{DrawCards()}: Mueve una catidad especificadas de \textbf{Cartas} desde el \textbf{Deck} hacia la mano del jugador.
+\item\textbf{Play()}: Método virtual para ser sobreescrito por sus respectivas subclases.
+\end{itemize}
+\subsubsection{HumanPlayer}
+El constructor de esta clase hereda del constructor de la clase padre \textbf{Player}
+\subsubsection{VirtualPlayer}
+El constructor de esta clase hereda del constructor de la clase padre \textbf{Player}. La clase hereda de una interfaz, en este caso \textbf{IAggressiveVirtualPlayer}, a través de la cual podrá implementar una estrategia de juego. Con esta abstracción se gana extensibilidad en cuanto a la estrategia del \textbf{Jugador Virtual}, pues para implementar otra bastaría con crear una nueva interfaz de la que herede la clase \textbf{VirtualPlayer} e implementar sus métodos. La actual interfaz \textbf{IAggressiveVirtualPlayer} posee 7 métodos, cuya implementación se encuentra en \textbf{VirtualPlayer}:
+\begin{itemize}
+\item\textbf{PlayVirtualPlayer()}: Ejecuta la estrategia  
+ \item\textbf{SortDescendingByLife()}: Ordena \textbf{Cartas} atendiendo a la propiedad \textbf{Health} de forma descendente, facilita la ejecución de la estrategia.
+  \item\textbf{SortAscendingByLife()}: Ordena \textbf{Cartas} atendiendo a la propiedad \textbf{Health} de forma ascendente, facilita la ejecución de la estrategia.
+\item\textbf{SortDescendingByAttack()}: Ordena \textbf{Cartas} atendiendo a la propiedad \textbf{Attack} de forma descendente, facilita la ejecución de la estrategia.
+\item\textbf{SortAscendingByAttack()}: Ordena \textbf{Cartas} atendiendo a la propiedad \textbf{Attack} de forma ascendente, facilita la ejecución de la estrategia.
+\item\textbf{SetPossiblePositions()}: Encuentra las posiciones libres para invocar en el campo.
+\item\textbf{SummonAllVirtualPlayer()}: Invoca todas las \textbf{Cartas} posibles
+\end{itemize}
+Además se sobreescribe el método \textbf{Play()} de \textbf{Player} para que ejecute \textbf{PlayVirtualPlayer()} que contiene la estrategia.
+
+\subsection{Menu}
+Esta clase es más amplia, contiene un gran número de funciones, por lo que haremos un resumen de las más importantes. Aquí se desarrolla la preparación del juego. Se propicia la navegación a través de un grupo de ventanas, que irán indicando los pasos para configurar la partida, mediante botones y otros nodos de \textbf{Godot} que facilitan la dinámica.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{MainMenu.png}
+\caption{Menú Principal}
+\end{figure}
+
+Entre los métodos más importantes están:
+\begin{itemize}
+\item\textbf{onCreateCardspressed()}: Abre el archivo \textbf{code.txt} donde se encuentra el \textbf{Código Fuente} para crear nuevas \textbf{Cartas}, nuevos \textbf{Decks} o modificar los existentes.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{CreateCards.png}
+\caption{Ejemplo de Código Fuente}
+\end{figure}
+
+\item\textbf{onPlayGamepressed()}: Ejecuta la función \textbf{ReadCode()} que lee y parsea el código de \textbf{code.txt}, luego pasa a la selección del \textbf{Deck} del usuario y del enemigo.
+\item\textbf{onSelectCardspressed()}: Una vez seleccionados ambos \textbf{Decks}, pasa a la selección de las \textbf{Cartas} del usuario, que serán desplegadas visualmente una a una.
+\item\textbf{ShowCardsForSelection()}: Muestra el visual de la \textbf{Carta} que puede ser seleccionada.
+\item\textbf{onRandompressed()}: Ejecuta la función \textbf{Random(int Amount)} que selecciona una cantidad determinada de cartas de forma aleatoria.
+\item\textbf{onGameModepressed()}: Una vez seleccionada la cantidad mínima de \textbf{Cartas} pasa a la selección del modo de juego (Human vs Human, Human vs Machine, Machine vs Machine).
+\item\textbf{onReadypressed()}: Una vez seleccionado el modo de juego, todo está listo para pasar al tablero y comenzar. Esta misma función, pero desde la clase \textbf{Game} inicializa ambos jugadores.
+\end{itemize}
+\subsection{Game}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{Board.png}
+\caption{Tablero}
+\end{figure}
+
+Esta es la clase donde se va a desarrollar el juego. También es bastante amplia, por lo que igualmente haremos un resumen de lo más importante.
+Nuestro juego funciona a través de un flujo de estados o fases, y consiste en, mediante la interacción de \textbf{Cartas}, ganar 2 rondas para obtener la victria final. Una ronda esta constituida por turnos, que a su vez está constituido por fases, donde en cada fase se pueden realizar determinadas acciones. Para ganar una ronda hay que eliminar (mediante ataques y efectos) las \textbf{Cartas} del oponente o mantener la mayor vida total entre las \textbf{Cartas} del campo con respecto a las del campo rival. Primeramente se establecen las condiciones iniciales y luego se procede a interpretar y dar respuesta a las acciones de los jugadores. Para todo ello se han implementado un conjunto de métodos, que representan las acciones que se deben hacer en el momento oportuno de cada partida. Un resumen de las más importantes es el siguiente:
+\begin{itemize}
+\item\textbf{SetFields()}: Asigna las casillas del tablero que le corresponden a cada jugador.
+\item\textbf{SetInitialStateOfBoard()}: Establece el estado inicial y prepara el tablero para el juego.
+\item\textbf{CreatePlayers()}: Instancia los jugadores, pasándole los parámetros que le corresponden.
+\item\textbf{onDeckpressed()}: Si el juego se ha acabado, sale del juego, si no, llama a la función \textbf{Start()}, que reparte las cartas a cada jugador y comienza la fase inicial.
+\item\textbf{PrintCardsinRange()}: Muestra visualmente las \textbf{Cartas} de la mano de cada jugador.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{BoardGameStarted.png}
+\caption{Juego iniciado}
+\end{figure}
+
+\item\textbf{MakeSummon()}: Ejecuta el cambio visual de invocar una \textbf{Carta}
+\item\textbf{onButtonpressed()}: Revisa si se cumplen las condiciones necesarias para invocar la \textbf{Carta} seleccionada en esa posición y llama a la función \textbf{Summon} del jugador al que pertence la carta
+\item\textbf{MakeDeck()}: Construye un \textbf{Deck}, a partir de la ruta hacia la carpeta donde están las cartas del \textbf{Deck}. Esta función es llamada desde \textbf{Menu} para construir el \textbf{Deck} del cual el usuario va a elegir sus \textbf{Cartas}.
+\item\textbf{ChangeSide()}: Indica que le toca jugar al otro jugador (el que no está jugando al ser llamada la función) y reinicia el flujo de fases.
+\item\textbf{DestroyCard()}: Mueve la \textbf{Carta} dada al cementerio visual y lógicamente.
+\item\textbf{onEndPhasepressed()}: Termina la fase actual y pasa para la siguiente, si la fase actual es la última, cambia de jugador y reinicia las fases.
+\item\textbf{onPassTurnpressed()}: Pasa directamente al turno de jugador rival. Si se presiona 2 veces seguidas, se termina la ronda y gana el jugador cuya sumatoria de la vida de sus \textbf{Cartas} en el campo sea mayor.
+\item\textbf{EndRound()}: Termina la ronda y declara un ganador de la ronda. Si es necesario, declara un ganador del juego.
+\item\textbf{onNextRoundpressed()}: Pasa para la próxima ronda, destruye las \textbf{Cartas} que queden en el campo de juego
+\item\textbf{onEffectButtonpressed()}: Se genera una fase donde se aplicarán los efectos de la carta previamente seleccionada
+\item\textbf{Input()}: Esta es una función especial de \textbf{Godot}. Recive y clasifica los eventos del ordenador, en este caso específicamente, los eventos de los botones del \textbf{Mouse}.
+\item\textbf{GetCardSelected()}: Devuelve la última \textbf{Carta} seleccionada (\textbf{null} si no hay ninguna \textbf{Carta} seleccionada).
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{BoardOnTheGame.png}
+\caption{En medio de una partida}
+\end{figure} 
+
+\subsection{GameStates}
+Esta clase no se encuentra en un script en la carpeta raíz (en States.cs la carpeta src) pero es fundamental para la ejecución correcta del juego. Es la encargada de regular los estados del juego que garantizarán el debido flujo de la partida. Principalmente contiene las las siguientes sublclases que representan fases:
+\begin{itemize}
+\item\textbf{MainPhase1}: En esta fase es posible realizar invocaciones y efectos
+\item\textbf{BattlePhase}: Es posible atacar las \textbf{Cartas} del oponente.
+\item\textbf{MainPhase2}: Nuevamente se pueden realizar invocaciones y efectos, luego de saber el resultado de la batalla.
+\item\textbf{EffectPhase}: Se genera cuando un jugador intenta ejecutar el efecto de una \textbf{Carta} y almacena todos los efectos de la carta que van a ser ejecutados.
+\end{itemize}
+
+
+\pagebreak
+
+%-----------------------------------------------------------------------------------
+\section{Sobre el Lenguaje}
+El lenguaje diseñado para el juego es muy similar a \textbf{C\#}. Para el mismo utilizamos una de las estructuras de programación más conocidas en el ámbito de la creación de lenguajes de programación: \textbf{Árboles de Sintaxis Abstracta (AST)}.
+Un \textbf{AST} es una representación de árbol de la estructura sintáctica simplificada del \textbf{Código Fuente} (en nuestro caso el que se encuentra en \textbf{code.txt}) escrito en cierto lenguaje de programación. Este árbol está constituido por nodos, que están representados por una clase abstracta llamada \textbf{ASTNode}, dentro del intérprete \textbf{AST}. De estos nodos heredarán clases como \textbf{ColdWarProgram}, que representa nuestro programa a la hora del parseo, donde estarán guardados los \textbf{Errores}, las \textbf{Corrientes Políticas} y las \textbf{Cartas} que se vayan generando.
+\subsection{Lexer}
+El \textbf{Lexer} es el componente del \textbf{Compilador} o \textbf{Intérprete} que identifica los símbolos escritos en un programa como válidos. Es el que reconoce las letras, palabras y símbolos. Nosotros creamos una clase \textbf{Token} que nos facilitará el trabajo con el \textbf{Lexer}. El \textbf{Lexer} leerá todos los símbolos para \textbf{Tokenizarlos}, convirtiéndolos en una lista de \textbf{Tokens}. Cada \textbf{Token} tendrá un tipo, un valor y una localización. La lista de \textbf{Tokens} se le pasa al \textbf{Parser}, que tiene una función que retorna un objeto de tipo \textbf{ColdWarProgram} (nodo principal de nuestro \textbf{AST}, posee las \textbf{Cards}, las \textbf{PoliticalCurrents}, los \textbf{Print} y los \textbf{EffectExpression}) y que se encarga de parsearla.
+\subsection{Parser}
+El \textbf{Parser}, como se dijo antes, será el encargado de, a partir del \textbf{TokenString} generado, leer los \textbf{Tokens} y generar \textbf{Cards}, \textbf{PoliticalCurrents} e interpretar condicionales de manera correcta. Por ejemplo, podrá leer y generar una \textbf{Carta} con esos valores, siempre y cuando cumpla con los requerimientos siguientes:
+\subsubsection{Sobre la creación de Cartas}
+Para crear \textbf{Cartas} existe la palabra clave \textbf{Card}, la cual debe ir seguida de un espacio y el nombre que se le quiera asignar. Luego, entre llaves, se escriben todas las características de la \textbf{Carta}. Se esperan 8 líneas de código con la siguiente estructura$<Keyword>=<Expression>;$. \textbf{Expression} debe ser un parámetro de tipo string encerrado entre comillas o una operación aritmética simple o compuesta. \textbf{Keyword} debe ser una de las palabras clave del lenguaje, que no deben repetirse y son las siguientes:
+\begin{itemize}
+\item\textbf{CardType} = $"<type>;"$  Se especifica el tipo de \textbf{Carta}. Las únicas opciones son \textbf{Unidad} y \textbf{Política}. Debe escribirse entre comillas.
+\item\textbf{Rareness}= $"<rareness>;"$ Se especifica la rareza de la \textbf{Carta}. Las únicas opciones posibles son \textbf{Legendaria} y \textbf{Común}. Debe escribirse entre comillas.
+\item\textbf{Lore}: = $"<lore>";$ Un breve texto que explica la historia de la carta. Debe escribirse entre comillas, ya que es un atributo de texto.
+\item\textbf{Health}: = $<double>;$
+\item\textbf{Attack}: = $<double>;$ Números que representan la vida y ataque de la \textbf{Carta} con la que luchará en el tablero. En las fichas de tipo \textbf{Política} no se deben configurar estos campos.
+\item\textbf{PoliticalCurrent}: = $"<politicalcurrent>;"$  Se especifica la \textbf{Corriente Política} a la que pertenece la \textbf{Carta}. Debe elegirse entre los ya existentes o creados en el código. Debe escribirse entre comillas.
+\item\textbf{PathToPhoto}: = $"<pathtophoto>;"$
+Pequeño texto que permite buscar en la base de datos de imágenes una foto adecuada para la \textbf{Carta}. Debe escribirse entre comillas. Puede ser solo un nombre, un apellido o algo que se refiera a la carta.
+\item\textbf{EffectText}: = $¨"<effecttext>;"$ Un pequeño texto que explica el efecto de la carta. Debe estar encerrado entre comillas.
+\item\textbf{Effect}: = $[<code string>];$ Debe escribirse entre corchetes.
+El efecto se escribirá en lenguaje de código, que puede contener lo mismo que el programa exterior, con la adición de las funciones del efecto.
+Nota: Si no desea agregar un efecto a la carta a crear, estos dos últimos campos se pueden omitir.
+\end{itemize}
+Todas las propiedades de las cartas, excepto \textbf{Effect}, pueden ser escritas en cualquier orden siempre y cuando se conserve \textbf{Effect} como último campo, elaborado en su correcto formato.
+
+En la versión actual del juego hay 8 efectos básicos. Estos se explican a continuación:
+
+\begin{itemize}
+\item\textbf{DestroyCard()}: Se elige una \textbf{Carta} en el campo para ser destruida.
+\item\textbf{DrawCards($<int>$)}: Obligatorio pasar un parámetro entero. Saca ese número de \textbf{Cartas} especificadas del \textbf{Deck}.
+\item\textbf{AddCardToDeck($<Card>$)}: 
+\item\textbf{AddCardToBoard($<Card>$)}: Añade al mazo o tablero respectivamente una \textbf{Carta} correctamente diseñada dentro del espacio de efecto.
+\item\textbf{IncreaseHealth($<int>, <conditionaleffect>$)}:
+\item\textbf{DecreaseHealth($<int>, <conditionaleffect>$)}:
+\item\textbf{IncreaseAttack($<int>, <conditionaleffect>$)}:
+\item\textbf{DecreaseAttack($<int>, <conditionaleffect>$)}: Obligatorio pasarles un parámetro entero y la condición de efecto es opcional. Disminuye y aumenta la vida y el ataque respectivamente por la cantidad ingresada como parámetro. Si no se garantiza una condición de efecto, el jugador puede elegir la \textbf{Carta} que recibirá la acción. Si se especifica, entonces será automático de acuerdo con los detalles, que se pueden resumir de la siguiente manera:
+\begin{itemize}
+\item\textbf{minHealth}: 
+\item\textbf{maxHealth}: 
+\item\textbf{minAttack}: 
+\item\textbf{maxAttack}: Estas condiciones eligen automáticamente como objetivo del efecto, entre las cartas del tablero, la que tiene menor o mayor salud o ataque respectivamente.
+\end{itemize}
+\end{itemize}
+
+\subsection{Expression}
+Luego de \textbf{Parsear} sin errores corresponde \textbf{Evaluar}. \textbf{Evaluar} es buscar todas las \textbf{Expressions} y asignarles un valor correcto con respecto a la entrada del usuario. Para ello se utilizan las \textbf{Expressions}
+\subsection{Expression}
+Definimos varios tipos de \textbf{Expressions}:
+\begin{itemize}
+\item\textbf{BinaryExpression}: add, sub, mul, div, POO, NumericComparerBool, SimpleBool. 
+\item\textbf{AtomExpression}: Boolean, Number, Text.
+\end{itemize}
+Existe otro tipo de \textbf{Expression} llamada \textbf{EffectExpression}, que es la encargada de tener toda la información necesaria con respecto a un \textbf{Efecto} y evaluarlo.
+\subsection{CheckSemantic}
+Teniendo los valores de las expresiones, comprueba que son los correspondientes. Por ejemplo, si en el espacio de \textbf{Health} se escribió un int, esatría correcto, y todo lo contrario si se escribió un string o algún otro tipo. Igualmente reporta como incorrecto escribir una una \textbf{PoliticalCurrent} que no existe en el actual \textbf{Contexto}.\\\\
+Nota: Es posible interpretar operaciones booleanas y aritméticas complejas.
+Al terminar este preceso sin errores reportados, se serializa la \textbf{Carta} en un archivo .json. 
+%-----------------------------------------------------------------------------------
+
+    
+
+\begin{thebibliography}{99} \label{biblio}
+%-----------------------------------------------------------------------------------
+\bibitem{Katrib}  Katrib, M. \textit{Empezar a programar. Un enfoque multiparadigma con \textbf{C\#}.} Editorial UH, 2020.
+\bibitem{GodotDocs} Godot Docs
+%-----------------------------------------------------------------------------------
+\end{thebibliography}
+
+%-----------------------------------------------------------------------------------
+
+\label{end}
+
+\end{document}
+
+%===================================================================================

@@ -1,0 +1,292 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.4.24)  5 FEB 2023 21:14
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**revista_ocm.sty
+(./revista_ocm.sty
+LaTeX2e <2020-02-02> patch level 2
+L3 programming layer <2020-02-14>
+Document Style `revistaOCM' 
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2020/02/14 3.40 The Babel package
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/switch.def
+File: switch.def 2020/02/14 3.40 Babel switching mechanism
+)
+! Missing \endcsname inserted.
+<to be read again> 
+                   \@classoptionslist 
+l.533     {}}
+             
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+! Extra \endcsname.
+\bbl@ifunset #1->\ifcsname #1\endcsname 
+                                        \expandafter \ifx \csname #1\endcsna...
+l.533     {}}
+             
+I'm ignoring this, since I wasn't doing a \csname.
+
+! Missing \endcsname inserted.
+<to be read again> 
+                   \@classoptionslist 
+l.533     {}}
+             
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+! Extra \endcsname.
+\bbl@ifunset ...ndafter \ifx \csname #1\endcsname 
+                                                  \relax \bbl@afterelse \exp...
+l.533     {}}
+             
+I'm ignoring this, since I wasn't doing a \csname.
+
+! Missing endcsname inserted.
+<to be read again> 
+                   @classoptionslist 
+l.533     {}}
+             
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.533     {}}
+             
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+Missing character: There is no . in font nullfont!
+Missing character: There is no l in font nullfont!
+Missing character: There is no d in font nullfont!
+Missing character: There is no f in font nullfont!
+! Extra \endcsname.
+<argument> ...me\@classoptionslist .ldf\endcsname 
+                                                  
+l.533     {}}
+             
+I'm ignoring this, since I wasn't doing a \csname.
+
+Missing character: There is no " in font nullfont!
+
+! Package babel Error: Unknown option `spanish'. Either you misspelled it
+(babel)                or the language definition file spanish.ldf was not foun
+d.
+
+See the babel package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.542 \ProcessOptions*
+                      
+Valid options are: shorthands=, KeepShorthandsActive,
+activeacute, activegrave, noconfigs, safe=, main=, math=
+headfoot=, strings=, config=, hyphenmap=, or a language name.
+
+Package babel Info: You haven't specified a language. I'll use 'nil'
+(babel)             as the main language. Reported on input line 572.
+(/usr/share/texlive/texmf-dist/tex/generic/babel/nil.ldf
+Overfull \hbox (20.0pt too wide) in paragraph at lines 533--34
+[]
+ []
+
+Language: nil 2020/02/14 3.40 Nil language
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2020/02/14 3.40 Babel common definitions
+\babel@savecnt=\count167
+\U@D=\dimen134
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+\bbl@readstream=\read2
+\bbl@dirlevel=\count168
+)
+\l@nil=\language3
+))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/epsfig.sty
+Package: epsfig 2017/06/25 v1.7b (e)psfig emulation (SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen135
+\Gin@req@width=\dimen136
+)
+\epsfxsize=\dimen137
+\epsfysize=\dimen138
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks15
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+))
+\Gm@cnth=\count169
+\Gm@cntv=\count170
+\c@Gm@tempcnt=\count171
+\Gm@bindingoffset=\dimen139
+\Gm@wd@mp=\dimen140
+\Gm@odd@mp=\dimen141
+\Gm@even@mp=\dimen142
+\Gm@layoutwidth=\dimen143
+\Gm@layoutheight=\dimen144
+\Gm@layouthoffset=\dimen145
+\Gm@layoutvoffset=\dimen146
+\Gm@dimlist=\toks16
+
+! Missing \endcsname inserted.
+<to be read again> 
+                   \@classoptionslist 
+l.1003 \ProcessOptionsKV[c]{Gm}
+                               %
+The control sequence marked <to be read again> should
+not appear between \csname and \endcsname.
+
+
+! Package geometry Error: \paperwidth (0.0pt) too short.
+
+See the geometry package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1006 \Gm@process
+                  
+Set a paper type (e.g., `a4paper').
+
+
+! Package geometry Error: \paperheight (0.0pt) too short.
+
+See the geometry package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1006 \Gm@process
+                  
+Set a paper type (e.g., `a4paper').
+
+
+Package geometry Warning: `width' results in NEGATIVE (-144.53998pt).
+    `lmargin' or `rmargin' should be shortened in length.
+
+
+Package geometry Warning: `height' results in NEGATIVE (-144.53998pt).
+    `tmargin' or `bmargin' should be shortened in length.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks17
+\inpenc@posthook=\toks18
+)
+
+! Package geometry Error: \paperwidth (0.0pt) too short.
+
+See the geometry package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.19 \geometry{margin=2cm}
+                          
+Set a paper type (e.g., `a4paper').
+
+
+! Package geometry Error: \paperheight (0.0pt) too short.
+
+See the geometry package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.19 \geometry{margin=2cm}
+                          
+Set a paper type (e.g., `a4paper').
+
+
+Package geometry Warning: `width' results in NEGATIVE (-113.811pt).
+    `lmargin' or `rmargin' should be shortened in length.
+
+
+Package geometry Warning: `height' results in NEGATIVE (-113.811pt).
+    `tmargin' or `bmargin' should be shortened in length.
+
+
+! LaTeX Error: Environment abstract undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.93 \renewenvironment{abstract}
+                                
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+\aftertitskip=\skip47
+\beforetitskip=\skip48
+\interauthorskip=\skip49
+\aftermaketitskip=\skip50
+
+! LaTeX Error: Command \appendix undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.224 \renewcommand{\appendix}
+                              {\par
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+)
+! Emergency stop.
+<*> revista_ocm.sty
+                   
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 2085 strings out of 483183
+ 27097 string characters out of 5966292
+ 267989 words of memory out of 5000000
+ 17140 multiletter control sequences out of 15000+600000
+ 532338 words of font info for 24 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 38i,0n,34p,227b,27s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!
